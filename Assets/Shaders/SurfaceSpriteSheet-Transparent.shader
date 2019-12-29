@@ -1,4 +1,4 @@
-﻿Shader "Custom/SurfaceSpriteSheet/Cutout" {
+﻿Shader "Custom/SurfaceSpriteSheet/Transparent" {
 	Properties {
 		[Header(General)]
 		_Color("Color", Color) = (1,1,1,1)
@@ -20,19 +20,27 @@
 		_Cutoff ("Alpha Cutoff", Range(0,1)) = 0.5
 		_AnimationSpeed ("Animation Speed", float) = 0
 
+		[Header(Advanced)]
+        [Enum(UnityEngine.Rendering.BlendOp)] _BlendOp("Blend Operation", Float) = 0
+        [Enum(UnityEngine.Rendering.CompareFunction)] _ZTest("Depth Test", Float) = 4
+        [Enum(DepthWrite)] _ZWrite("Depth Write", Float) = 0
+
 		[Header(System)]
         [Enum(UnityEngine.Rendering.CullMode)] _CullMode("Cull Mode", Float) = 0
 		[ToggleOff(_SPECULARHIGHLIGHTS_OFF)]_SpecularHighlights ("Specular Highlights", Float) = 1.0
 		[ToggleOff(_GLOSSYREFLECTIONS_OFF)]_GlossyReflections ("Glossy Reflections", Float) = 1.0
 	}
 	SubShader {
-		Tags { "Queue"="AlphaTest+0" "RenderType" = "TransparentCutout" }
+		Tags { "Queue"="Transparent" "RenderType" = "Transparent" "IgnoreProjector"="True" }
 		LOD 200
 		
 		Cull[_CullMode]
+		
+        ZTest[_ZTest]
+        ZWrite[_ZWrite]
 
 		CGPROGRAM
-		#pragma surface surf Standard fullforwardshadows alphatest:_Cutoff addshadow
+		#pragma surface surf Standard fullforwardshadows alpha addshadow
 		#pragma target 3.0
 
 		sampler2D _MainTex;
